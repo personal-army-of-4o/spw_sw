@@ -1,7 +1,7 @@
 #include "spacewire.h"
 #include "stddef.h"
 
-char read_byte(char * const src)
+char read_byte(const char * const src)
 {
     if (src == NULL)
         while(1);
@@ -9,7 +9,7 @@ char read_byte(char * const src)
     return *src;
 }
 
-char null_byte(char * src)
+char null_byte(char * const src)
 {
     if (src == NULL)
         while(1);
@@ -19,7 +19,7 @@ char null_byte(char * src)
     return '\0';
 }
 
-char write_byte(char * src, char byte)
+char write_byte(char * const src, char byte)
 {
     if (src == NULL)
         while(1);
