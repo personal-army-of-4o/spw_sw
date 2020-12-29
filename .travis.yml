@@ -1,0 +1,16 @@
+env:
+  global:
+    - IMG=gcc
+    - DISTR=latest
+    - SCRIPT=compile.bash
+    - WORKDIR=/mnt/data
+
+services:
+  - docker
+
+# Here are the list of run scripts of different DUTs/testcases
+script:
+  - > 
+    docker run -t -v `pwd`:$WORKDIR $IMG:$DISTR
+    /bin/bash -c "chmod u+x $WORKDIR/$SCRIPT; cd $WORKDIR; $WORKDIR/$SCRIPT"
+
