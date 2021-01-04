@@ -1,13 +1,12 @@
-#include <assert.h>
-#include <stdio.h>
-#include <stddef.h>
 #include "../src/spacewire.h"
 #include "debug.h"
+#include <assert.h>
+#include <stddef.h>
+#include <stdio.h>
 
 static char my_char = 'A';
 
-int main()
-{
+int main() {
     log_info("*** start test ***\n");
 
     assert(my_char == read_byte(&my_char));
