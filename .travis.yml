@@ -2,7 +2,6 @@ env:
   global:
     - IMG=gcc
     - DISTR=latest
-    - SCRIPT=make test_all
     - WORKDIR=/mnt/data
 
 services:
@@ -12,5 +11,5 @@ services:
 script:
   - >
     docker run -t -v `pwd`:$WORKDIR $IMG:$DISTR
-    /bin/bash -c "cd $WORKDIR; $WORKDIR/$SCRIPT"
+    /bin/bash -c "cd $WORKDIR; make test_1"
 
