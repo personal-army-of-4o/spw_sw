@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "../src/spacewire.h"
+#include "debug.h"
 
 static char my_char = 'A';
 
 int main()
 {
-    printf("*** start test ***\n");
+    log_info("*** start test ***\n");
 
     assert(my_char == read_byte(&my_char));
 
@@ -17,7 +18,7 @@ int main()
     write_byte(&my_char, 'B');
     assert('B' == my_char);
 
-    printf("*** all tests passed! ***\n");
+    log_info("*** all tests passed! ***\n");
 
     return 0;
 }

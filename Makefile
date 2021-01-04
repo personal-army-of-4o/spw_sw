@@ -3,12 +3,26 @@ include colors.mk
 SHELL = /bin/bash
 CC = gcc
 CFLAGS = -Wall -Wpedantic
-CFLAGS += -std=gnu99 -pthread -Itest -Isrc
+CFLAGS += -std=gnu99 -Itest -Isrc
 CFLAGS += -DTEST
+#this gets rid of annoying debug __VA_ARGS warnings
+CFLAGS += -Wno-gnu-zero-variadic-macro-arguments
+
+# log everything but DEBUG by default. set with `make LOGLEVEL=N` where N is 0 to 4
+LOGLEVEL ?= 3
+CFLAGS += -DLOGLEVEL=$(LOGLEVEL)
+
+# enable NDEBUG flag by default. run with `make NDEBUG=0` to disable
+NDEBUG ?= 1
+ifeq ($(NDEBUG), 1)
+	CFLAGS += -DNDEBUG
+endif
+
 CROSS_COMPILE ?= riscv32-unknown-elf-
 OUTDIR ?= build
 RISCV32_CC = $(CROSS_COMPILE)$(CC)
 COMPILE_RISCV32 =
+
 
 .PHONY : all setup_riscv build_riscv build_x86 build_dir clean
 
@@ -42,7 +56,7 @@ test_1: build_x86
 	$(OUTDIR)/$@
 
 test_2: build_x86
-	$(CC) $(CFLAGS) test/main_x86.c -o $(OUTDIR)/$@
+	$(CC) $(CFLAGS) test/main_x86.c -o $(OUTDIR)/$@ -pthread
 	@echo "${GREEN}running tests${RESET}"
 	$(OUTDIR)/$@
 
