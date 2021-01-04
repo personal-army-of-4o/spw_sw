@@ -2,7 +2,7 @@ env:
   global:
     - IMG=gcc
     - DISTR=latest
-    - SCRIPT=compile.bash
+    - SCRIPT=make test_all
     - WORKDIR=/mnt/data
 
 services:

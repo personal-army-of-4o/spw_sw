@@ -34,7 +34,7 @@ else
 	$(CC) -c $(CFLAGS) $< -o $(OUTDIR)/$@
 endif
 
-all_tests: test_1 test_2
+test_all: test_1 test_2
 
 test_1: build_x86
 	$(CC) $(CFLAGS) test/test.c -o $(OUTDIR)/$@ $(OUTDIR)/spacewire.o
