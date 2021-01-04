@@ -1,24 +1,54 @@
+include colors.mk
+
+SHELL = /bin/bash
 CC = gcc
 CFLAGS = -Wall -Wpedantic
+CFLAGS += -std=gnu99 -pthread -Itest -Isrc
+CFLAGS += -DTEST
 CROSS_COMPILE ?= riscv32-unknown-elf-
+OUTDIR ?= build
 RISCV32_CC = $(CROSS_COMPILE)$(CC)
+COMPILE_RISCV32 =
 
-.PHONY : all build_riscv build_x86 test build_dir clean
+.PHONY : all setup_riscv build_riscv build_x86 build_dir clean
+
+# add directories into source search path
+VPATH = src:test
 
 all: build_riscv
 
-build_riscv: src/spacewire.c | build_dir
-	$(RISCV32_CC) $(CFLAGS) $< -o build/spacewire.o -c
+build_riscv:
+	$(MAKE) COMPILE_RISCV32=yes build
 
-build_x86: src/spacewire.c | build_dir
-	$(CC) $(CFLAGS) $< -o build/spacewire.o -c
+build_x86:
+	$(MAKE) COMPILE_RISCV32=no build
 
-test: build_x86
-	$(CC) $(CFLAGS) test/test.c -o build/$@ build/spacewire.o
-	./build/test
+build: spacewire.o
+
+%.o: %.c | build_dir
+ifeq ($(COMPILE_RISCV32),yes)
+	@echo "${GREEN}compiling for RISCV${RESET}"
+	$(RISCV32_CC) -c $(CFLAGS) $< -o $(OUTDIR)/$@
+else
+	@echo "${GREEN}compiling for native system (most likely x86)${RESET}"
+	$(CC) -c $(CFLAGS) $< -o $(OUTDIR)/$@
+endif
+
+all_tests: test_1 test_2
+
+test_1: build_x86
+	$(CC) $(CFLAGS) test/test.c -o $(OUTDIR)/$@ $(OUTDIR)/spacewire.o
+	@echo "${GREEN}running tests${RESET}"
+	$(OUTDIR)/$@
+
+test_2: build_x86
+	$(CC) $(CFLAGS) test/main_x86.c -o $(OUTDIR)/$@
+	@echo "${GREEN}running tests${RESET}"
+	$(OUTDIR)/$@
 
 build_dir:
-	mkdir -p build
+	@echo "${GREEN}BUILDDIR${RESET}"
+	mkdir -p $(OUTDIR)
 
 clean:
-	rm -rf build/
+	rm -rf $(OUTDIR)

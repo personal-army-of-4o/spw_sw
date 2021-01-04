@@ -4,8 +4,6 @@
 #include "platform.h"
 #include "loop.h"
 
-//#define DEBUG
-
 const uint32_t MINPORTS = 3; // minimum number of router ports to test
 const uint32_t MAXPORTS = 32; // maximum number of router ports to test
 const uint32_t MINLOGICADDRS = 0; // minimum number of logic paths per port in routing table
@@ -139,7 +137,7 @@ void setup (uint32_t pn, uint32_t lan, uint32_t options, pthread_t* tid) {
     setup_router_regs (pn);
     setup_routing_table (pn, lan, options);
     enable = 1;
-    pthread_create (tid, NULL, (void*)&loop, NULL);
+    pthread_create (tid, NULL, loop, NULL);
 }
 
 void cleanup (pthread_t tid) {
@@ -313,7 +311,7 @@ uint32_t test_vars_setup () {
     return 0;
 }
 
-uint32_t main () {
+int main () {
     uint32_t ret = 0;
     puts ("started");
     ret |= test_routing ();
